@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer';
 import { protect } from '../middleware/userMiddleware';
-import { loginUser, getUser, registerUser, updateUser } from '../controller/authController';
+import { loginUser, getUser, registerUser, updateUser, googleAuth } from '../controller/authController';
 
 
 const router = express.Router();
@@ -13,6 +13,7 @@ const upload = multer({ storage, limits:{
 } });
 
 router.post("/", registerUser);
+router.post("/google-auth", googleAuth);
 router.post("/login", loginUser);
 router.patch("/update", protect, upload.single('image'), updateUser);
 router.get("/get-user", protect, getUser);

@@ -84,7 +84,8 @@ export const registerUser = async(req:Request, res:Response):Promise<void> =>{
             fullname,
             email,
             password,
-            image
+            image,
+            googleSignIn: false,
         })
 
         createSendToken(newUser as unknown as UserDocs , 201, res);
@@ -99,6 +100,30 @@ export const registerUser = async(req:Request, res:Response):Promise<void> =>{
     }
 
 }
+
+export const googleAuth = async (req: Request, res: Response): Promise<void> => {
+    const { fullname, email, picture } = req.body;
+
+    try {
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            user = await User.create({
+                fullname,
+                email,
+                picture,
+                googleSignIn: true, 
+                password: undefined
+            });
+        }
+
+        createSendToken(user as unknown as UserDocs, 200, res);
+    } catch (error) {
+        console.error("Google Auth Error:", error);
+        res.status(500).json({ message: 'Google Sign-in Failed' });
+    }
+};
+
 
 export const loginUser = async(req:Request, res:Response):Promise<void> =>{
 
@@ -119,9 +144,10 @@ export const loginUser = async(req:Request, res:Response):Promise<void> =>{
             })
             return;
         }
-
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
+         let isPasswordCorrect;
+        if(user.password){
+         isPasswordCorrect = await bcrypt.compare(password, user.password);
+        }
         if(!isPasswordCorrect){
             res.status(400).json({
                 message: 'Incorrect password'

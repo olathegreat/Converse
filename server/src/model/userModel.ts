@@ -5,9 +5,10 @@ export interface UserDocument extends Document{
     _id: ObjectId,
     fullname: string,
     email: string,
-    password: string,
+    password?: string,
     picture?: string,
     profileSetupCompleted: boolean,
+    googleSignIn: boolean,
     userType?:'user' | 'moderator' | 'admin'
 
 }
@@ -30,13 +31,20 @@ const userSchema = new Schema<UserDocument>({
     },
     password:{
         type: String,
-        required: [true, 'Please enter your password'],
+        // required: [true, 'Please enter your password'],
+        required: function(this: UserDocument){
+            return !this.googleSignIn;
+        },
         trim: true,
         minLength: [6, 'Password must be more than 6 characters'],
         select: false,
     },
     picture:{
         type: String,
+    },
+    googleSignIn:{
+        type: Boolean,
+        default: false,
     },
     profileSetupCompleted:{
         type: Boolean,
@@ -51,9 +59,10 @@ const userSchema = new Schema<UserDocument>({
 })
 
 userSchema.pre('save', async function(next){
-    if(!this.isModified('password')){
+    if(!this.isModified('password') || !this.password){
         return next();
     }
+   
     this.password = await bcrypt.hash(this.password, 12);
     next();
 })
