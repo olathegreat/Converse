@@ -10,6 +10,7 @@ import CustomLoaderCircle from "./LoaderCircle";
 import { useDispatch } from "react-redux";
 import { setFormDisplay } from "../utils/appSlice";
 import { useNavigate } from "react-router-dom";
+import { signInWithGoogle } from "../utils/firebase";
 
 
 const SignInForm = () => {
@@ -48,6 +49,37 @@ const SignInForm = () => {
       setRequestSending(false);
     }
   };
+
+  const googleSignIn = async (e: any) => {
+      e.preventDefault();
+  
+     
+  
+      
+  
+      try {
+        const user = await signInWithGoogle();
+        console.log(user);
+        const {displayName, email, photoURL} = user;
+  
+        setRequestSending(true);
+        const res = await apiClient.post("/api/v1/auth/google-auth", {
+          fullname: displayName,
+          email,
+          picture: photoURL,
+          
+        });
+        toast("google signup successfully");
+  
+        console.log(res.data);
+        setRequestSending(false);
+        navigate("/profile")
+      } catch (err) {
+        console.log(err);
+        toast.error("sign in failed")
+        setRequestSending(false);
+      }
+    };
 
   return (
     <div className="flex w-full md:w-auto flex-col text-white">
@@ -112,7 +144,7 @@ const SignInForm = () => {
       </div>
 
       <div className="flex  gap-4 ">
-        <Button className="flex-1 bg-transparent border">
+        <Button onClick={googleSignIn} className="flex-1 bg-transparent border">
           <FcGoogle /> Google
         </Button>
         <Button className="flex-1 bg-white text-black">

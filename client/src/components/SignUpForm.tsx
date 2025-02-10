@@ -12,6 +12,7 @@ import PasswordStrengthBar from "react-password-strength-bar"
 import { useDispatch } from "react-redux";
 import { setFormDisplay } from "../utils/appSlice";
 import { useNavigate } from "react-router-dom";
+import { signInWithGoogle } from "../utils/firebase";
 
 const SignUpForm = () => {
   const [fullname, setFullname] = useState("");
@@ -24,13 +25,26 @@ const SignUpForm = () => {
 
   const [displayPassword, setDisplayPassword] = useState(false);
   const [displayConfirmPassword, setDisplayConfirmPassword] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [passwordStrength, setPasswordStrength] = useState(0);
 
   const formSubmit = async (e: any) => {
     e.preventDefault();
 
     if (!fullname || !email || !password || !confirmPassword || !agree) {
       toast("please fil all fields");
+      return;
+    }
+    if(password.length < 6){
+      toast("password must be at least 6 characters long")
+      return;
+    }
+    if(password.length > 16){
+      toast("password must be less than 16 characters long")
+      return;
+    }
+    if(passwordStrength <2 ){
+      toast("password is too weak, please use  a more stronger password, (use capital letters, numbers and symbols)")
       return;
     }
 
@@ -53,6 +67,37 @@ const SignUpForm = () => {
       navigate("/profile")
     } catch (err) {
       console.log(err);
+      setRequestSending(false);
+    }
+  };
+
+  const googleSignIn = async (e: any) => {
+    e.preventDefault();
+
+   
+
+    
+
+    try {
+      const user = await signInWithGoogle();
+      console.log(user);
+      const {displayName, email, photoURL} = user;
+
+      setRequestSending(true);
+      const res = await apiClient.post("/api/v1/auth/google-auth", {
+        fullname: displayName,
+        email,
+        picture: photoURL,
+        
+      });
+      toast("google signup successfully");
+
+      console.log(res.data);
+      setRequestSending(false);
+      navigate("/profile")
+    } catch (err) {
+      console.log(err);
+      toast.error("sign in failed")
       setRequestSending(false);
     }
   };
@@ -88,9 +133,9 @@ const SignUpForm = () => {
 
         <div className="flex gap-2 items-center border rounded-md pr-2 placeholder:text-white/80 border-none focus:outline-transparent bg-white/30">
           <Input
-            className="flex-grow border-none focus:outline-transparent focus:border-transparent placeholder:text-white/60"
+            className="flex-grow border-none focus:outline-transparent focus:shadow-none focus:ring-0 focus:ring-offset-0 focus:border-transparent placeholder:text-white/60"
             type={displayPassword ? "text" : "password"}
-            placeholder="Password"
+            placeholder="Password "
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -108,11 +153,14 @@ const SignUpForm = () => {
             />
           )}
         </div>
-        <PasswordStrengthBar password={password} />
+        {
+          password !== "" &&  <PasswordStrengthBar password={password} onChangeScore={setPasswordStrength}/>
+        }
+       
 
         <div className="flex gap-2 items-center border rounded-md pr-2 placeholder:text-white/80 border-none focus:outline-none bg-white/30">
           <Input
-            className="flex-grow border-none outlin focus:ring-0 focus:border-transparent placeholder:text-white/60"
+            className="flex-grow border-none focus:shadow-none focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-none !important placeholder:text-white/60"
             type={displayConfirmPassword ? "text" : "password"}
             placeholder="Confirm Password"
             value={confirmPassword}
@@ -164,7 +212,7 @@ const SignUpForm = () => {
       </div>
 
       <div className="flex  gap-4 ">
-        <Button className="flex-1 bg-transparent border">
+        <Button onClick={googleSignIn} className="flex-1 bg-transparent border">
           <FcGoogle /> Google
         </Button>
         <Button className="flex-1 bg-white text-black">
