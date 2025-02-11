@@ -1,21 +1,22 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import cookieParser from "cookie-parser"
 import mongoose from 'mongoose'
 import {v2 as cloudinary} from "cloudinary"
-
 import UserRoutes from './routes/userRoutes'    
 
 
 
 dotenv.config();
 
+
 mongoose.connect(process.env.DATABASE_URL as string).then(() => {
     console.log('Connected to database')
 }).catch((err) => {
     console.log(err)
 })
-
+ 
 mongoose.connection.on('connected', () => {
     console.log('Mongoose connected to database')
 })
@@ -46,6 +47,7 @@ app.use(cors({
 }))
 
 app.use(express.json());
+app.use(cookieParser());
 
 
 app.get('/health', async(req:Request, res:Response)=>{

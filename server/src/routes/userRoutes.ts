@@ -1,4 +1,4 @@
-import express from 'express'
+import express from 'express' 
 import multer from 'multer';
 import { protect } from '../middleware/userMiddleware';
 import { loginUser, getUser, registerUser, updateUser, googleAuth } from '../controller/authController';

@@ -38,6 +38,8 @@ const createSendToken = (user:UserDocs, statusCode:number, res:Response) =>{
     const cookieOptions = {
         expires: new Date(Date.now() + cookieExpires),
         httpOnly: true,
+        secure: true,
+      sameSite: "none" as "none",
     
     }
 
@@ -122,7 +124,7 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
         console.error("Google Auth Error:", error);
         res.status(500).json({ message: 'Google Sign-in Failed' });
     }
-};
+}; 
 
 
 export const loginUser = async(req:Request, res:Response):Promise<void> =>{
@@ -208,7 +210,7 @@ export const getUser = async( req:AuthenticatedUserDocs, res:Response):Promise<v
 
   
 
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).select("_id fullname email picture");
 
   if(!user){
     res.status(404).json({

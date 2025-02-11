@@ -13,20 +13,23 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const protect = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-
-    const token= req.cookies.jwt;
-
-    if(!token){
-        res.status(401).json({
-            message: 'You are not logged in'
-        })
-        return;
-    }
+    
+    const token= req.cookies.jwt  || " ";
+    
+   
     try{
+        
+
+        if(!token){
+            res.status(401).json({
+                message: 'You are not logged in'
+            })
+            return;
+        }
 
     
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
-    const freshUser = await User.findById(decoded.id).select('_id, fullname');
+    const freshUser = await User.findById(decoded.id).select('_id fullname');
     if(!freshUser){
         res.status(401).json({
             message: 'User does not exist'
@@ -39,11 +42,12 @@ export const protect = async (req: AuthenticatedRequest, res: Response, next: Ne
 
 }catch(err){
     res.status(401).json({
-        message: 'Invalid token, unauthorised'
+        message: 'Invalid token, unauthorised',
+        token
     })
 }
 
 
-
+ 
 
 }
