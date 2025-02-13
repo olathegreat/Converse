@@ -240,6 +240,7 @@ const ProfilePage = () => {
                   😀 {/* Emoji Button */}
                 </button>
                 <EmojiPicker
+                
                   theme={Theme.DARK}
                   onEmojiClick={(emoji) => {
                     setUserInfo({
