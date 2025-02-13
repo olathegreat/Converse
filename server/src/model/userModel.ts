@@ -7,6 +7,7 @@ export interface UserDocument extends Document{
     email: string,
     password?: string,
     picture?: string,
+    about?: string,
     profileSetupCompleted: boolean,
     googleSignIn: boolean,
     userType?:'user' | 'moderator' | 'admin'
@@ -27,6 +28,13 @@ const userSchema = new Schema<UserDocument>({
         trim: true,
         unique: true,
         lowercase: true,
+
+    },
+    about:{
+        type: String,
+        trim: true,
+        minLength : [2, "Your about should not be less than 6"]
+
 
     },
     password:{

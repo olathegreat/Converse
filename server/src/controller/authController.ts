@@ -17,6 +17,7 @@ type UserDocs = {
     email: string,
     password: string,
     picture?: string,
+    about?:string,
     profileSetupCompleted?: boolean,
     userType?: 'user' | 'moderator' | 'admin'
 }
@@ -171,7 +172,7 @@ export const loginUser = async(req:Request, res:Response):Promise<void> =>{
 }
 
 export const updateUser = async(req:AuthenticatedUserDocs, res:Response): Promise<void> => {
-    const {fullname, email, password, image} = req.body;
+    const {fullname,about, email, password, image} = req.body;
 
     try{
         const existingUser = await User.findById(req.user!._id);
@@ -182,6 +183,7 @@ export const updateUser = async(req:AuthenticatedUserDocs, res:Response): Promis
 
         existingUser.fullname = fullname;
         existingUser.password = password;
+        existingUser.about = about;
 
         if(req.file){
             const imageUrl = await uploadImage(req.file as Express.Multer.File);

@@ -4,7 +4,10 @@ import dotenv from 'dotenv'
 import cookieParser from "cookie-parser"
 import mongoose from 'mongoose'
 import {v2 as cloudinary} from "cloudinary"
-import UserRoutes from './routes/userRoutes'    
+import UserRoutes from './routes/userRoutes' 
+import ContactRoutes from "./routes/contactRoutes"
+import messagesRoutes from './routes/messageRoutes'   
+import setUpSocket from './socket'
 
 
 
@@ -56,9 +59,12 @@ app.get('/health', async(req:Request, res:Response)=>{
     })
 });
 
-app.use('/api/v1/auth', UserRoutes)
+app.use('/api/v1/auth', UserRoutes);
+app.use('/api/v1/contact', ContactRoutes)
+app.use('/api/v1/messages', messagesRoutes)
 
 
 const server = app.listen(process.env.PORT, ()=>{
     console.log(`server is running on port ${process.env.pORT}`)
 })
+setUpSocket(server)
