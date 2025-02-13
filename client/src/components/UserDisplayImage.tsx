@@ -22,7 +22,7 @@ const UserDisplayImage = ({user, previewImage} :{user: UserInfoType, previewImag
         {
             user.picture && typeof user.picture === 'string' ? (    
                <Avatar className="w-full h-full">
-                  <AvatarImage  src={previewImage ? previewImage : user.picture} alt={user.fullname} />
+                  <AvatarImage referrerPolicy="no-referrer"  src={previewImage ? previewImage : user.picture} alt={user.fullname} />
                 </Avatar>
             ): (
                 <div className="">

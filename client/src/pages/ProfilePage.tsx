@@ -8,10 +8,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { setUserDetails } from "../utils/appSlice";
 import CustomLoaderCircle from "../components/LoaderCircle";
+import { useNavigate } from "react-router-dom";
+import { Textarea } from "../components/ui/textarea";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 
 export type UserInfoType = {
   fullname: string;
   email: string;
+  about: string;
   picture: File | string;
   _id: string;
 };
@@ -25,6 +29,20 @@ const ProfilePage = () => {
   const [imageChangeLoading, setImageChangeLoading] = useState(false);
   const dispatch = useDispatch();
   const saveUserInfo = useSelector((state: any) => state.app.userDetails);
+  const emojiRef = useRef<HTMLDivElement | null>(null);
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (emojiRef.current && !emojiRef.current.contains(event.target)) {
+        setEmojiPickerOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [emojiRef]);
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -55,12 +73,17 @@ const ProfilePage = () => {
       toast("Change picture or fullname");
       return;
     }
+    if( userInfo && userInfo?.about.length < 2){
+         toast("your about should not be lower than 2 characters ")
+         return;
+    }
 
     try {
       setUpdateLoading(true);
       const updatedFormData = new FormData();
 
       updatedFormData.append("fullname", userInfo!.fullname);
+      updatedFormData.append("about", userInfo!.about);
 
       const res = await apiClient.patch(
         "/api/v1/auth/update",
@@ -74,7 +97,7 @@ const ProfilePage = () => {
 
       console.log(res);
       dispatch(setUserDetails(res.data));
-      setUserInfo(res.data)
+      setUserInfo(res.data);
       toast.success("updated successfully");
       setUpdateLoading(false);
     } catch (err) {
@@ -97,6 +120,8 @@ const ProfilePage = () => {
       const updatedFormData = new FormData();
 
       updatedFormData.append("fullname", userInfo!.fullname);
+      updatedFormData.append("about", userInfo!.about);
+
       updatedFormData.append("image", e.target.files[0]);
 
       const res = await apiClient.patch(
@@ -112,7 +137,7 @@ const ProfilePage = () => {
       console.log(res);
       dispatch(setUserDetails(res.data));
       toast.success("image update successful");
-    //   setUserInfo(res.data);
+      //   setUserInfo(res.data);
       setUpdateLoading(false);
       setImageChangeLoading(false);
     } catch (err) {
@@ -122,6 +147,8 @@ const ProfilePage = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="flex items-center justify-center h-[100vh]">
       {getLoading && <CustomLoaderCircle />}
@@ -130,35 +157,46 @@ const ProfilePage = () => {
           getLoading ? "hidden" : "flex"
         }  gap-10`}
       >
-        {userInfo && (
-          <div className="h-40 w-40 group relative">
-            <UserDisplayImage  user={saveUserInfo} />
+        <div className="flex flex-col gap-2">
+          {userInfo && (
+            <div className="h-40 w-40 group relative">
+              <UserDisplayImage user={saveUserInfo} />
 
-            {!imageChangeLoading && (
-              <div
-                onClick={handleFileInput}
-                className="absolute hidden group-hover:flex w-full h-full rounded-full bg-black/30 top-0  items-center justify-center transition-all duration-300 cursor-pointer"
-              >
-                <IoIosAdd className="text-8xl font-bold text-white" />
-              </div>
-            )}
-            {imageChangeLoading && (
-              <div className="absolute  flex w-full h-full rounded-full bg-black/30 top-0  items-center justify-center transition-all duration-300 cursor-pointer">
-                <CustomLoaderCircle />
-              </div>
-            )}
-            <input
-              type="file"
-              ref={imageref}
-              name="image"
-              accept=".png, .jpg, .jpeg, .svg, .webp"
-              className="hidden"
-              onChange={(e: any) => {
-                handleFileChange(e);
-              }}
-            />
+              {!imageChangeLoading && (
+                <div
+                  onClick={handleFileInput}
+                  className="absolute hidden group-hover:flex w-full h-full rounded-full bg-black/30 top-0  items-center justify-center transition-all duration-300 cursor-pointer"
+                >
+                  <IoIosAdd className="text-8xl font-bold text-white" />
+                </div>
+              )}
+              {imageChangeLoading && (
+                <div className="absolute  flex w-full h-full rounded-full bg-black/30 top-0  items-center justify-center transition-all duration-300 cursor-pointer">
+                  <CustomLoaderCircle />
+                </div>
+              )}
+              <input
+                type="file"
+                ref={imageref}
+                name="image"
+                accept=".png, .jpg, .jpeg, .svg, .webp"
+                className="hidden"
+                onChange={(e: any) => {
+                  handleFileChange(e);
+                }}
+              />
+            </div>
+          )}
+
+          <div className="flex justify-center">
+            <Button
+              onClick={() => navigate("/chat")}
+              className="bg-transparent border-white border hover:bg-white/30"
+            >
+              Go to chat
+            </Button>
           </div>
-        )}
+        </div>
 
         <div className="w-80 text-white">
           <div className="text-3xl mb-5">Personal info</div>
@@ -178,11 +216,42 @@ const ProfilePage = () => {
               type="email"
               placeholder="Email"
               value={userInfo?.email}
-              onChange={(e) => {
-                setUserInfo({ ...userInfo!, email: e.target.value });
-              }}
               disabled
             />
+
+            <div className="flex gap relative" ref={emojiRef}>
+              <Textarea
+                className="placeholder:text-white/80 border-none focus:outline-none bg-white/30 resize-none"
+                placeholder="Brief desc about you..."
+                value={userInfo?.about}
+                onChange={(e) => {
+                  setUserInfo({ ...userInfo!, about: e.target.value });
+                }}
+              />
+              <div
+                className=" text-4xl absolute right-2 top-1 z-50"
+                ref={emojiRef}
+              >
+                <button
+                  type="button"
+                  className="absolute right-2 top-2 text-2xl"
+                  onClick={() => setEmojiPickerOpen(!emojiPickerOpen)}
+                >
+                  😀 {/* Emoji Button */}
+                </button>
+                <EmojiPicker
+                  theme={Theme.DARK}
+                  onEmojiClick={(emoji) => {
+                    setUserInfo({
+                      ...userInfo!,
+                      about: (userInfo?.about || "") + emoji.emoji,
+                    });
+                  }}
+                  autoFocusSearch={false}
+                  open={emojiPickerOpen}
+                />
+              </div>
+            </div>
 
             <Button
               disabled={updateLoading}
