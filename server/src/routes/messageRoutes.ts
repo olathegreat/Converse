@@ -1,7 +1,7 @@
 import express from "express"
 import multer from "multer"
 import { protect } from "../middleware/userMiddleware";
-import { getMessages, uploadFiles } from "../controller/messageController";
+import { getMessages, getUserMessagesList, uploadFiles } from "../controller/messageController";
 
 
 
@@ -22,6 +22,6 @@ messagesRoutes.get("/get-user-messages/:id", protect, getMessages);
 
 messagesRoutes.post("/upload", protect, upload.single('file'), uploadFiles)
 
-
+messagesRoutes.get("/get-user-messages-contact", protect, getUserMessagesList)
 export default messagesRoutes;
 
