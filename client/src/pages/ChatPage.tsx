@@ -22,6 +22,7 @@ const ChatPage = () => {
 
   useEffect(() => {
       const getUserInfo = async () => {
+        console.log("get loading")
         setGetLoading(true);
         try {
           const res = await apiClient.get("/api/v1/auth/get-user");
