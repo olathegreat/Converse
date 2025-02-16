@@ -22,6 +22,7 @@ interface AppState {
     isFileDownload: boolean;
     fileDownloadProgress: number;
     directMessagesContact: UserInfoType[] | [];
+    mobileViewChatDisplay: boolean
 }
 
 const initialState: AppState = {
@@ -32,7 +33,8 @@ const initialState: AppState = {
         email: "",
         picture: "",
         _id: "",
-        about: ""
+        about: "",
+
     },
     selectedUser: {
         fullname: "",
@@ -46,7 +48,8 @@ const initialState: AppState = {
     isFileDownload: false,
     fileDownloadProgress:0,
     fileUploadProgress:0,
-    directMessagesContact:[]
+    directMessagesContact:[],
+    mobileViewChatDisplay: false
 };
 
 const appSlice = createSlice({
@@ -87,9 +90,12 @@ const appSlice = createSlice({
 
 
         },
+        setMobileViewChatDisplay: (state)=>{
+            state.mobileViewChatDisplay = !state.mobileViewChatDisplay;
+        }
     }
 })
 
-export const { setDirectMessagesContact,setFileDownloadProgress,setFileUploadProgress,setIsFileDownload, setIsFileUpload,setFormDisplay,addUserMessages,setUserMessages, setUserDetails, setSelectedUser } = appSlice.actions;
+export const { setDirectMessagesContact,setFileDownloadProgress,setFileUploadProgress,setIsFileDownload, setIsFileUpload,setFormDisplay,addUserMessages,setUserMessages, setUserDetails, setSelectedUser, setMobileViewChatDisplay } = appSlice.actions;
 
 export default appSlice.reducer;

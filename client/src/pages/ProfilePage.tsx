@@ -153,11 +153,11 @@ const ProfilePage = () => {
     <div className="flex items-center justify-center h-[100vh]">
       {getLoading && <CustomLoaderCircle />}
       <div
-        className={`max-w-[600px] p-10 h-fit bg-[#10002e] rounded-lg ${
-          getLoading ? "hidden" : "flex"
+        className={`w-[90%] sm:max-w-[600px] p-4 sm:p-10 h-fit bg-[#10002e] rounded-lg ${
+          getLoading ? "hidden" : "flex flex-col sm:flex-row"
         }  gap-10`}
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-center gap-2">
           {userInfo && (
             <div className="h-40 w-40 group relative">
               <UserDisplayImage user={saveUserInfo} />
@@ -198,7 +198,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        <div className="w-80 text-white">
+        <div className="sm:w-80 text-white">
           <div className="text-3xl mb-5">Personal info</div>
           <form className="flex flex-col gap-4">
             <Input

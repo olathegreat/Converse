@@ -5,7 +5,7 @@ import { apiClient } from "../lib/apiClient";
 import { Button } from "./ui/button";
 import ContactCard from "./ContactCard";
 import { useDispatch } from "react-redux";
-import { setSelectedUser } from "../utils/appSlice";
+import { setMobileViewChatDisplay, setSelectedUser } from "../utils/appSlice";
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [contactArray, setContactArray] = useState([]);
@@ -27,7 +27,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="flex flex-col w-[250px] relative">
+    <div className="flex flex-col w-full sm:w-[250px] relative">
       <div className="w-full flex items-center text-white rounded-md border gap-2 pr-2 backdrop-blur-lg">
 
         <form className="w-full flex items-center gap-2">
@@ -61,6 +61,7 @@ const SearchBar = () => {
                 key={contact.fullname}
                 onClick={()=>{
                   dispatch(setSelectedUser(contact))
+                  dispatch(setMobileViewChatDisplay())
                   setContactArray([]);
                 }}
                 

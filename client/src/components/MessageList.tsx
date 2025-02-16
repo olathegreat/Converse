@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiClient } from "../lib/apiClient";
 import { useDispatch } from "react-redux";
-import { setDirectMessagesContact, setSelectedUser } from "../utils/appSlice";
+import { setDirectMessagesContact, setMobileViewChatDisplay, setSelectedUser } from "../utils/appSlice";
 import ContactCard from "./ContactCard";
 
 const MessageList = () => {
@@ -46,7 +46,10 @@ const MessageList = () => {
                 messageList.map((chatData:any)=>(
                     <div 
                       key={chatData._id}
-                       onClick={()=>dispatch(setSelectedUser(chatData))}
+                       onClick={()=>{
+                        dispatch(setSelectedUser(chatData))
+                        dispatch(setMobileViewChatDisplay())
+                      }}
                        
                        >
                         <ContactCard fullname={chatData.fullname} about={chatData.about} picture={chatData.picture}/>

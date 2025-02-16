@@ -17,6 +17,7 @@ import MessageList from "../components/MessageList";
 const ChatPage = () => {
   const userInfo = useSelector((state: any) => state.app.userDetails);
   const [getLoading, setGetLoading] = useState(false);
+  const mobileViewChatDisplay = useSelector((state: any)=> state.app.mobileViewChatDisplay);
   const dispatch = useDispatch();
   const selectedUser = useSelector((state:any)=> state.app.selectedUser);
 
@@ -42,10 +43,10 @@ const ChatPage = () => {
 
   return (
     <div className="flex justify-center items-center h-[100vh]">
-      <div className="bg-[#10002e] backdrop-blur-lg w-[80vw] h-[70vh] rounded-lg flex">
+      <div className="bg-[#10002e] backdrop-blur-lg w-[80vw] h-[70vh] rounded-lg flex flex-col sm:flex-row">
         {/* side widget */}
-        <div className="flex flex-col h-full justify-between  p-4 w-fit items-center">
-          <div className="flex flex-col w-fit items-center gap-4">
+        <div className="flex flex-row sm:flex-col sm:h-full justify-between   p-4  sm:w-fit items-center">
+          <div className="flex flex-row sm:flex-col w-fit items-center gap-4">
             <div className="h-10 w-10">
               <UserDisplayImage user={userInfo} />
             </div>
@@ -63,13 +64,21 @@ const ChatPage = () => {
 
         {/* contact */}
 
-        <div className="py-4  flex gap-4  flex-col">
+        <div className="hidden py-4 px-4 sm:px-0  sm:flex gap-4  flex-col">
             <SearchBar/>
             <MessageList/>
         </div>
 
+        {
+          !mobileViewChatDisplay &&
+          <div className="flex py-4 px-4 sm:hidden sm:px-0  gap-4  flex-col">
+          <SearchBar/>
+          <MessageList/>
+      </div>
+        }
+
         {/* chat */}
-        <div className="flex flex-grow  p-4">
+        <div className="hidden  sm:flex flex-grow  p-4">
             {
                 selectedUser.fullname  ? 
             
@@ -81,7 +90,7 @@ const ChatPage = () => {
 
 
             </div> : 
-            <div className="flex flex-grow items-center justify-center text-sm italic text-white/80">
+            <div className="hidden sm:flex flex-grow items-center justify-center text-sm italic text-white/80">
                     <Typewriter
                         loop={5}
                         cursor
@@ -98,6 +107,38 @@ const ChatPage = () => {
             
 
         </div>
+
+        {
+          mobileViewChatDisplay && <div className="flex  sm:hidden flex-grow  sm:p-4 px-4">
+          {
+              selectedUser.fullname  ? 
+          
+          <div className="w-full relative flex flex-col">
+
+             <ChatHeader/>
+             <ChatBody/>
+             <ChatSender/>
+
+
+          </div> : 
+          <div className="hidden sm:flex flex-grow items-center justify-center text-sm italic text-white/80">
+                  <Typewriter
+                      loop={5}
+                      cursor
+                      cursorStyle='_'
+                      typeSpeed= {100}
+                      deleteSpeed={150}
+                      delaySpeed={1000}
+                      words ={["Select a chat to start messaging"]}
+                  
+                  />
+                
+              </div>
+}
+          
+
+      </div>
+        }
 
         <div></div>
       </div>

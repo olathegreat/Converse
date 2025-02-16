@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import {IoIosArrowBack} from "react-icons/io"
-import { setSelectedUser } from "../utils/appSlice";
+import { setMobileViewChatDisplay, setSelectedUser } from "../utils/appSlice";
 
 const ChatHeader = () => {
   const user = useSelector((state: any) => state.app.selectedUser);
@@ -29,24 +29,27 @@ const ChatHeader = () => {
       </div>
 
       <div className="flex flex-col ml-3">
-        <div className="text-sm font-semibold ">{user.fullname || "Unknown User"}</div>
+        <div className="text-sm sm:font-semibold ">{user.fullname || "Unknown User"}</div>
         {user.about && <div className="text-xs text-gray-500 truncate">{user.about}</div>}
       </div>
 
-      {user.lastMessageTime && (
+      {/* {user.lastMessageTime && (
         <div className="ml-auto text-xs text-gray-400">{user.lastMessageTime}</div>
-      )}
+      )} */}
       </div>
 
       <div>
         <IoIosArrowBack
-          onClick={()=>dispatch(setSelectedUser({
+          onClick={()=>{
+            dispatch(setSelectedUser({
             fullname: "",
         email: "",
         picture: "",
         _id: "",
         about: ""
-          }))}
+          }))
+        dispatch(setMobileViewChatDisplay())
+        }}
         className="text-white text-2xl cursor-pointer" />
 
       </div>
