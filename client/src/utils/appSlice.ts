@@ -1,12 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { UserInfoType } from "../pages/ProfilePage";
 
+export type messageType = {
+    _id?: string;
+    sender: string;
+    recipient: string;
+    messageType: string;
+    content?: string;
+    fileUrl?: string;
+    timeStamp?: Date;
+}
 
 interface AppState {
 
     formDisplay: "signup" | "signin";
     userDetails: UserInfoType;
     selectedUser: UserInfoType;
+    messagesArray: messageType[] | [];
+    isFileUpload: boolean;
+    fileUploadProgress: number;
+    isFileDownload: boolean;
+    fileDownloadProgress: number;
+    directMessagesContact: UserInfoType[] | [];
 }
 
 const initialState: AppState = {
@@ -25,7 +40,13 @@ const initialState: AppState = {
         picture: "",
         _id: "",
         about: ""
-    }
+    },
+    messagesArray: [],
+    isFileUpload:false,
+    isFileDownload: false,
+    fileDownloadProgress:0,
+    fileUploadProgress:0,
+    directMessagesContact:[]
 };
 
 const appSlice = createSlice({
@@ -41,10 +62,34 @@ const appSlice = createSlice({
         setSelectedUser: (state, action) => {
             state.selectedUser = action.payload
             console.log(state.selectedUser);
-        }
+        },
+        addUserMessages: (state, action)=>{
+            state.messagesArray = [...state.messagesArray, action.payload
+            ]
+        },
+        setUserMessages: (state, action)=>{
+            state.messagesArray = action.payload
+        },
+        setIsFileUpload:(state)=>{
+            state.isFileUpload = !state.isFileUpload
+        },
+        setIsFileDownload:(state)=>{
+            state.isFileDownload = !state.isFileDownload
+        },
+        setFileUploadProgress:(state, action)=>{
+            state.fileUploadProgress = action.payload
+        },
+        setFileDownloadProgress:(state, action)=>{
+            state.fileDownloadProgress = action.payload
+        },
+        setDirectMessagesContact: (state, action) => {
+            state.directMessagesContact = action.payload
+
+
+        },
     }
 })
 
-export const { setFormDisplay, setUserDetails, setSelectedUser } = appSlice.actions;
+export const { setDirectMessagesContact,setFileDownloadProgress,setFileUploadProgress,setIsFileDownload, setIsFileUpload,setFormDisplay,addUserMessages,setUserMessages, setUserDetails, setSelectedUser } = appSlice.actions;
 
 export default appSlice.reducer;

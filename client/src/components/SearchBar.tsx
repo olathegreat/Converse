@@ -35,7 +35,7 @@ const SearchBar = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           type="text"
-          className="border-none"
+          className="border-none focus:!outline-none focus:!ring-0"
           placeholder="search contact"
         />
         <Button onClick={searchContact} type="submit" className="bg-transparent w-fit">
@@ -59,7 +59,10 @@ const SearchBar = () => {
 
                 <div
                 key={contact.fullname}
-                onClick={()=>dispatch(setSelectedUser(contact))}
+                onClick={()=>{
+                  dispatch(setSelectedUser(contact))
+                  setContactArray([]);
+                }}
                 
                 className="w-full rounded-md hover:bg-gray-100/90 transition-all duration-300 cursor-pointer py-1 border-b">
 

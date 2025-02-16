@@ -93,7 +93,7 @@ const SignInForm = () => {
        
 
         <Input
-          className="placeholder:text-white/80 border-none focus:outline-none bg-white/30"
+          className="placeholder:text-white/80 border-none focus:!outline-none focus:!ring-0 bg-white/30"
           type="email"
           placeholder="Email"
           value={email}
@@ -104,7 +104,7 @@ const SignInForm = () => {
 
         <div className="flex gap-2 items-center border rounded-md pr-2 placeholder:text-white/80 border-none focus:outline-transparent bg-white/30">
           <Input
-            className="flex-grow border-none focus:outline-transparent focus:border-transparent placeholder:text-white/60"
+            className="flex-grow focus:!outline-none focus:!ring-0 border-none focus:outline-transparent focus:border-transparent placeholder:text-white/60"
             type={displayPassword ? "text" : "password"}
             placeholder="Password"
             value={password}

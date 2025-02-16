@@ -11,6 +11,7 @@ import ChatHeader from "../components/ChatHeader";
 import ChatBody from "../components/ChatBody";
 import ChatSender from "../components/ChatSender";
 import { Typewriter } from 'react-simple-typewriter'
+import MessageList from "../components/MessageList";
 
 
 const ChatPage = () => {
@@ -61,8 +62,9 @@ const ChatPage = () => {
 
         {/* contact */}
 
-        <div className="py-4">
+        <div className="py-4  flex gap-4  flex-col">
             <SearchBar/>
+            <MessageList/>
         </div>
 
         {/* chat */}

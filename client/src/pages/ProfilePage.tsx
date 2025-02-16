@@ -202,7 +202,7 @@ const ProfilePage = () => {
           <div className="text-3xl mb-5">Personal info</div>
           <form className="flex flex-col gap-4">
             <Input
-              className="placeholder:text-white/80 border-none focus:outline-none bg-white/30"
+              className="placeholder:text-white/80 border-none focus:!outline-none focus:!ring-0 bg-white/30"
               type="text"
               placeholder="Full Name"
               value={userInfo?.fullname}
@@ -212,7 +212,7 @@ const ProfilePage = () => {
             />
 
             <Input
-              className="placeholder:text-white/80 border-none focus:outline-none bg-white/30"
+              className="placeholder:text-white/80 border-none focus:!outline-none focus:!ring-0 bg-white/30"
               type="email"
               placeholder="Email"
               value={userInfo?.email}
@@ -221,7 +221,7 @@ const ProfilePage = () => {
 
             <div className="flex gap relative" ref={emojiRef}>
               <Textarea
-                className="placeholder:text-white/80 border-none focus:outline-none bg-white/30 resize-none"
+                className="placeholder:text-white/80 border-none focus:!outline-none focus:!ring-0 bg-white/30 resize-none"
                 placeholder="Brief desc about you..."
                 value={userInfo?.about}
                 onChange={(e) => {
