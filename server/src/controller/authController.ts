@@ -231,3 +231,14 @@ export const getUser = async( req:AuthenticatedUserDocs, res:Response):Promise<v
     
 }
 }
+
+export const logoutUser = async(req:AuthenticatedUserDocs, res: Response):Promise<void> =>{
+        
+    res.clearCookie("token",{
+        httpOnly: true,
+        secure: true,
+      sameSite: "none" as "none",
+    })
+
+    res.status(200).json({message: "logout successful"})
+}
