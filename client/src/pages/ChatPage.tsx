@@ -4,7 +4,7 @@ import {IoIosSettings} from "react-icons/io"
 import {BiLogOutCircle} from "react-icons/bi"
 import { useEffect, useState } from "react";
 import { apiClient } from "../lib/apiClient";
-import { setUserDetails } from "../utils/appSlice";
+import { setDirectMessagesContact, setMobileViewChatDisplay, setSelectedUser, setUserDetails, setUserMessages } from "../utils/appSlice";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import ChatHeader from "../components/ChatHeader";
@@ -12,6 +12,7 @@ import ChatBody from "../components/ChatBody";
 import ChatSender from "../components/ChatSender";
 import { Typewriter } from 'react-simple-typewriter'
 import MessageList from "../components/MessageList";
+import { toast } from "sonner";
 
 
 const ChatPage = () => {
@@ -39,6 +40,39 @@ const ChatPage = () => {
     }, []);
 
     const navigate = useNavigate();
+
+    const logout = async ()=>{
+      dispatch(setUserDetails({
+        fullname: "",
+        email: "",
+        picture: "",
+        _id: "",
+        about: "",
+
+    }))
+    dispatch(setSelectedUser({
+      fullname: "",
+      email: "",
+      picture: "",
+      _id: "",
+      about: "",
+
+  }))
+  dispatch(setUserMessages([]))
+  dispatch(setDirectMessagesContact([]))
+  dispatch(setMobileViewChatDisplay());
+
+  const res = await apiClient.post("/api/v1/auth/logout");
+  console.log(res);
+
+  if(res){
+    toast("logout successful")
+    navigate("/");
+
+  }
+  
+
+    }
   
 
   return (
@@ -59,7 +93,7 @@ const ChatPage = () => {
 
 
 
-          <BiLogOutCircle className="text-white hover:text-red-700 text-3xl cursor-pointer transition-all duration-300"/>
+          <BiLogOutCircle onClick={logout} className="text-white hover:text-red-700 text-3xl cursor-pointer transition-all duration-300"/>
         </div>
 
         {/* contact */}
